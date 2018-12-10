@@ -29,6 +29,7 @@
 
 ### Version ###
 ------------------------------------------------------------------------------------------------------------------
+- v2018.12.09 - Update config
 - v2017.08.10 - Release
 
 
@@ -62,18 +63,18 @@
 #include "ScriptPCH.h"
 #include "ScriptedGossip.h"
 
-bool GamblerNPCAnnounce = 1;
+bool GamblerNPCAnnounce = true;
 uint32 Bet1 = 1;
-uint32 Bet2 = 1;
-uint32 Bet3 = 1;
-uint32 Bet4 = 1;
-uint32 Bet5 = 1;
-uint32 Jackpot = 1;
+uint32 Bet2 = 2;
+uint32 Bet3 = 3;
+uint32 Bet4 = 4;
+uint32 Bet5 = 5;
+uint32 Jackpot = 50;
 
 class GamblerConfig : public WorldScript
 {
 public:
-    GamblerConfig() : WorldScript("GamblerConfig_conf") { }
+    GamblerConfig() : WorldScript("GamblerConfig") { }
 
     void OnBeforeConfigLoad(bool reload) override
     {
@@ -87,23 +88,30 @@ public:
             sConfigMgr->LoadMore(cfg_def_file.c_str());
             sConfigMgr->LoadMore(cfg_file.c_str());
 
-            // Get bet amounts from config
-            GamblerNPCAnnounce = sConfigMgr->GetBoolDefault("GamblerNPC.Announce", true);
-            Bet1 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
-            Bet2 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
-            Bet3 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
-            Bet4 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
-            Bet5 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
-            Jackpot = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
+            // Load Configuration Settings
+            SetInitialWorldSettings();
         }
+    }
+
+    // Load Configuration Settings
+    void SetInitialWorldSettings()
+    {
+        // Get the bet amounts from config
+        GamblerNPCAnnounce = sConfigMgr->GetBoolDefault("GamblerNPC.Announce", true);
+        Bet1 = sConfigMgr->GetIntDefault("Gambler.Amount1", 1);
+        Bet2 = sConfigMgr->GetIntDefault("Gambler.Amount2", 2);
+        Bet3 = sConfigMgr->GetIntDefault("Gambler.Amount3", 3);
+        Bet4 = sConfigMgr->GetIntDefault("Gambler.Amount4", 4);
+        Bet5 = sConfigMgr->GetIntDefault("Gambler.Amount5", 5);
+        Jackpot = sConfigMgr->GetIntDefault("Gambler.Jackpot", 50);
     }
 };
 
-class GamblerAnnounce : public WorldScript
+class GamblerAnnounce : public PlayerScript
 {
 
 public:
-   GamblerAnnounce() : WorldScript("GamblerAnnounce") {}
+   GamblerAnnounce() : PlayerScript("GamblerAnnounce") {}
 
     void OnLogin(Player* player)
     {
